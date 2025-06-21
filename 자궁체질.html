@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>길음한의원 자궁체질 자가문진표와 섭생가이드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .question-group, .results-container, .guide-container { margin-bottom: 1.5rem; padding: 1.5rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; background-color: #f9fafb; }
+        .question-title, .results-title, .guide-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: #1f2937; }
+        .question-item { margin-bottom: 0.75rem; display: flex; align-items: center; }
+        .question-item input[type="checkbox"] { margin-right: 0.75rem; width: 1.25rem; height: 1.25rem; border-radius: 0.25rem; border-color: #9ca3af; accent-color: #0d9488; }
+        .question-item label { font-weight: 500; color: #374151; flex-grow: 1; }
+        .score-item { margin-bottom: 0.5rem; }
+        .score-value { font-weight: 600; }
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+        @media (min-width: 768px) { .grid-container { grid-template-columns: 1fr 1fr; gap: 1rem; } }
+        .guide-section { margin-bottom: 1.5rem; border-bottom: 1px dashed #d1d5db; padding-bottom: 1.5rem; }
+        .guide-section:last-child { border-bottom: none; padding-bottom: 0; }
+        .guide-section h4 { font-size: 1.1rem; font-weight: 600; color: #0d9488; margin-bottom: 0.5rem; }
+        .guide-section .recommend { color: #10b981; }
+        .guide-section .caution { color: #ef4444; }
+        .guide-section ul { list-style: disc; margin-left: 1.5rem; }
+        .warning { background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 1rem; margin-bottom: 1rem; font-size: 0.9rem; color: #b45309; }
+        .my-constitution { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; padding: 1rem; background-color: #ecfdf5; color: #065f46; border-radius: 0.5rem; }
+        .input-field { width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; }
+
+        /* @media print는 더 이상 메인 body 숨기기에 사용하지 않습니다. */
+        /* 대신, 인쇄될 내용의 스타일을 더 깔끔하게 합니다. */
+        @media print {
+            body {
+                background-color: #fff; /* 인쇄 시 배경색 흰색 */
+                margin: 0;
+                padding: 0;
+            }
+            /* .printable-area의 shadow, border 등을 인쇄 시 제거 */
+            .printable-area {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+            .results-container, .guide-container {
+                border: none; /* 인쇄 시 테두리 제거 */
+                background-color: #fff; /* 인쇄 시 배경색 흰색 */
+                padding: 0; /* 인쇄 시 패딩 조절 */
+            }
+            .guide-section {
+                page-break-inside: avoid; /* 섹션이 페이지 중간에서 끊어지지 않도록 */
+            }
+
+            /* 테이블 스타일 추가 */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1rem;
+                margin-bottom: 1rem; /* Adjust as needed */
+            }
+            th, td {
+                border: 1px solid #ccc;
+                padding: 0.75rem;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+                font-weight: 600;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+
+    <div class="printable-area max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6 md:p-8">
+        <header class="mb-8 text-center">
+            <img src="images/gilum_logo.png" alt="길음한의원 로고" class="mx-auto mb-4" style="max-width: 150px;">
+            <h1 class="text-3xl font-bold text-teal-600">길음한의원 자궁체질 자가문진표</h1>
+            <p class="text-gray-600 mt-2">아래 항목 중 현재 해당되는 모든 곳에 ✔ 체크해 주세요.</p>
+        </header>
+
+        <form id="healthChecklistForm">
+            <div class="question-group">
+                <h2 class="question-title">기본 정보</h2>
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">성함:</label>
+                    <input type="text" id="name" name="name" class="input-field">
+                </div>
+                <div class="mb-4">
+                    <label for="ageInput" class="block text-sm font-medium text-gray-700 mb-1">나이:</label>
+                    <input type="number" id="ageInput" name="ageInput" class="input-field">
+                </div>
+                <div class="mb-4">
+                    <label for="dateInput" class="block text-sm font-medium text-gray-700 mb-1">검사 날짜:</label>
+                    <input type="date" id="dateInput" name="dateInput" class="input-field">
+                </div>
+            </div>
+            <div class="question-group">
+                <h2 class="question-title">증상 체크</h2>
+                <div class="grid-container"></div>
+            </div>
+            <button type="submit" class="w-full mt-6 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                결과 확인 및 저장하기
+            </button>
+        </form>
+
+        <button id="printResultBtn" class="w-full mt-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 ease-in-out hidden">
+            결과 및 가이드 출력하기
+        </button>
+
+
+        <div id="resultsContainer" class="results-container mt-8 hidden">
+            <h2 class="results-title">패턴별 점수 결과</h2>
+            <div id="coldPatternScore" class="score-item"></div>
+            <div id="qiBloodDeficiencyScore" class="score-item"></div>
+            <div id="qiStagnationScore" class="score-item"></div>
+            <div id="bloodStasisScore" class="score-item"></div>
+            <div id="dampPhlegmScore" class="score-item"></div>
+            <div id="yinDeficiencyHeatScore" class="score-item"></div>
+        </div>
+
+        <div id="guideContainer" class="guide-container mt-8 hidden">
+            <h2 class="guide-title">내 몸을 위한 맞춤 가이드: 자궁사상(子宮四象) 체질별 섭생 가이드</h2>
+            <p class="mb-4">이 가이드는 환자분의 '자궁사상' 체질에 맞춰 건강한 생활 습관을 실천하실 수 있도록 돕기 위해 만들어졌습니다. 아래 내용을 참고하여 일상생활 속에서 꾸준히 실천해 보세요. 내 몸의 긍정적인 변화를 경험하실 수 있습니다.</p>
+            <div class="warning">⚠️ 주의: 이 내용은 일반적인 권장 사항이며, 개인의 상세한 상태나 동반 질환에 따라 달라질 수 있습니다. 반드시 담당 한의사의 지도에 따라 실천해 주세요.</div>
+
+            <div id="myConstitutionResult" class="my-constitution hidden"></div>
+
+            <div id="guideCold" class="guide-content hidden">
+                <h3 class="text-2xl font-bold text-blue-600 mb-4">💧 냉체질 (冷體質) 섭생 가이드</h3>
+                <div class="guide-section">
+                    <h4>1. 음식 (飮食)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>몸을 따뜻하게 데워주는 음식을 드세요 (생강, 계피, 마늘, 부추, 단호박, 닭고기 등).</li>
+                        <li>볶거나 끓이는 등 익힌 조리법을 활용하고, 따뜻한 국물을 곁들이세요.</li>
+                        <li>물은 상온이나 따뜻하게, 차는 쑥차나 생강차를 추천합니다.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                        <li>찬 음식과 음료(아이스크림, 냉면, 빙수, 찬물), 날음식(생선회, 생채소), 성질이 찬 여름 과일(참외, 수박)은 피하는 것이 좋습니다.</li>
+                        <li>돼지고기와 밀가루는 과다 섭취하지 않도록 주의하세요.</li>
+                    </ul>
+                </div>
+                <div class="guide-section">
+                    <h4>2. 운동 (運動)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>햇볕을 쬐며 걷거나, 요가(핫요가 제외), 필라테스, 스트레칭 등 따뜻하고 부드러운 운동이 좋습니다.</li>
+                        <li>운동 전후 준비운동과 마무리 운동은 필수이며, 항상 몸을 따뜻하게 유지하세요.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                        <li>찬물 수영이나 추운 날 야외 운동 시에는 보온에 각별히 신경 써야 합니다.</li>
+                        <li>너무 격렬한 운동은 피하세요.</li>
+                    </ul>
+                </div>
+                   <div class="guide-section">
+                    <h4>3. 생활습관</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>보온이 핵심입니다. 항상 아랫배, 발, 허리를 따뜻하게 유지하세요 (복대, 양말, 찜질, 핫팩 활용).</li>
+                        <li>따뜻한 물로 반신욕이나 족욕을 즐기세요.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                       <li>찬 바닥이나 찬물 접촉을 피하세요.</li>
+                    </ul>
+                </div>
+                   <div class="guide-section">
+                    <h4>4. 수면 (睡眠)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>일찍, 충분히, 따뜻하게 자는 것이 좋습니다.</li>
+                        <li>밤 11시 이전에 잠자리에 들어 최소 7시간 이상 주무시고, 두꺼운 이불이나 수면 양말을 활용해 따뜻한 잠자리를 만드세요.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="guideDamp" class="guide-content hidden">
+                <h3 class="text-2xl font-bold text-green-600 mb-4">🌿 습체질 (濕體質) 섭생 가이드</h3>
+                   <div class="guide-section">
+                    <h4>1. 음식 (飮食)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>몸속 습기를 제거하는 데 도움이 되는 음식을 드세요 (율무, 팥, 옥수수수염차, 녹두, 동과, 미역, 다시마 등).</li>
+                        <li>흰살 생선, 두부처럼 담백하고 소화가 잘되는 음식을 선택하고, 양배추, 브로콜리 등 섬유질이 풍부한 채소를 충분히 섭취하세요.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                        <li>기름진 음식, 튀김, 인스턴트식품은 습기를 더합니다.</li>
+                        <li>단 음식, 설탕, 유제품(우유, 치즈), 밀가루 음식(빵, 떡)과 과도한 탄수화물 섭취를 줄이세요.</li>
+                        <li>음주, 야식, 과식은 피해야 합니다.</li>
+                    </ul>
+                </div>
+                <div class="guide-section">
+                    <h4>2. 운동 (運動)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>조깅, 등산, 에어로빅, 자전거 타기 등 땀을 적당히 낼 수 있는 유산소 운동을 꾸준히, 규칙적으로(주 3회 이상) 하는 것이 좋습니다.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                        <li>너무 습한 환경에서 운동하거나, 땀을 너무 많이 내는 사우나는 피하는 것이 좋습니다.</li>
+                    </ul>
+                </div>
+                   <div class="guide-section">
+                    <h4>3. 생활습관</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>건조하고 쾌적한 환경을 유지하세요. 제습기를 사용하거나 자주 환기하고, 땀 흘린 후에는 바로 닦고 옷을 갈아입으세요.</li>
+                        <li>통풍 잘되는 면 소재 옷을 입고, 규칙적인 배변 습관을 들이세요.</li>
+                    </ul>
+                </div>
+                   <div class="guide-section">
+                    <h4>4. 수면 (睡眠)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>적정 시간을 자고 쾌적한 환경을 유지하세요. 7~8시간 정도가 적당합니다.</li>
+                        <li>침구는 자주 환기하고 햇볕에 말려 건조하게 유지하세요.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                       <li>너무 오래 자는 것은 오히려 습기를 조장할 수 있습니다.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="guideBlood" class="guide-content hidden">
+                <h3 class="text-2xl font-bold text-red-600 mb-4">❤️ 혈체질 (血體質) 섭생 가이드</h3>
+                <div class="guide-section">
+                    <h4>1. 음식 (飮食)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>혈액 생성과 순환을 돕는 음식을 드세요 (시금치, 깻잎, 비트, 당근, 검은콩, 검은깨, 소고기, 계란 노른자, 굴, 전복, 미역, 다시마, 톳 등).</li>
+                        <li>혈액 순환을 위해 생강, 울금, 양파, 미나리 등을 곁들이고, 호두나 잣 같은 견과류도 적당량 섭취하세요.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                        <li>무리한 다이어트나 편식은 혈액 부족을 심화시킵니다.</li>
+                        <li>인스턴트, 가공식품, 탄산음료를 줄이고, 과도한 카페인 섭취(커피, 녹차)는 피하세요.</li>
+                        <li>맵고 자극적인 음식과 찬 음식은 혈액 순환을 방해할 수 있습니다.</li>
+                    </ul>
+                </div>
+                <div class="guide-section">
+                    <h4>2. 운동 (運動)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>걷기, 요가, 타이치, 가벼운 조깅 등 규칙적이면서도 무리하지 않는 운동이 좋습니다.</li>
+                        <li>특히 골반과 하체 위주의 스트레칭은 혈액 순환에 도움이 됩니다.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                        <li>과격하거나 경쟁적인 운동, 장시간 운동은 피하고, 특히 생리 중에는 무리하지 마세요.</li>
+                    </ul>
+                </div>
+                   <div class="guide-section">
+                    <h4>3. 생활습관</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>규칙적인 생활 리듬을 유지하세요. 식사와 수면 시간을 일정하게 하고, 스마트폰이나 PC 사용을 줄여 눈의 피로를 더세요.</li>
+                        <li>긍정적인 마음으로 스트레스를 관리하고, 생리 중에는 따뜻한 찜질과 휴식을 취하세요.</li>
+                    </ul>
+                </div>
+                   <div class="guide-section">
+                    <h4>4. 수면 (睡眠)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>질 높은 수면, 특히 밤 11시부터 새벽 3시 사이의 숙면이 중요합니다.</li>
+                        <li>이 시간은 혈액이 생성되고 회복되는 중요한 시간이므로, 잠들기 전 스마트폰 사용이나 카페인 음료 섭취는 피하세요.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="guideQi" class="guide-content hidden">
+                   <h3 class="text-2xl font-bold text-orange-600 mb-4">💨 기체질 (氣體質) 섭생 가이드</h3>
+                   <div class="guide-section">
+                    <h4>1. 음식 (飮食)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>기운 소통을 돕거나(무, 귤껍질, 민트, 자스민, 로즈마리, 쑥갓), 진액을 보충하는(배, 연근, 마, 꿀, 흰목이버섯, 두부, 오이) 음식을 드세요.</li>
+                        <li>신선한 채소와 과일을 즐기고, 맑은 국물이나 부드러운 음식이 좋습니다.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                        <li>맵고 자극적인 음식이나 향신료 과다는 기운을 소모하거나 열을 조장할 수 있습니다.</li>
+                        <li>과도한 카페인과 음주를 피하고, 불규칙한 식사, 과식, 폭식은 기의 흐름을 방해합니다.</li>
+                        <li>건조한 음식(마른 반찬, 튀각)은 진액 부족을 심화시킬 수 있습니다.</li>
+                    </ul>
+                </div>
+                <div class="guide-section">
+                    <h4>2. 운동 (運動)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>명상, 이완 요가, 자연 속 걷기, 타이치 등 마음을 편안하게 하는 운동이 좋습니다.</li>
+                        <li>부드러운 스트레칭과 심호흡도 도움이 됩니다.</li>
+                    </ul>
+                    <p class="mt-2"><strong class="caution">주의해요:</strong></p>
+                    <ul>
+                        <li>땀을 너무 많이 내는 운동은 진액 부족을 심화시킬 수 있으니 주의하고, 너무 격렬하거나 경쟁적인 운동은 피하세요.</li>
+                    </ul>
+                </div>
+                   <div class="guide-section">
+                    <h4>3. 생활습관</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>스트레스 관리가 중요합니다. 명상, 취미 활동, 심호흡, 대화 등을 통해 스트레스를 해소하세요.</li>
+                        <li>긍정적인 생각을 하고 감정을 건강하게 표현하는 연습을 하세요.</li>
+                        <li>미지근한 물을 자주 마시고, 가습기 등을 이용해 실내 습도를 조절하세요.</li>
+                    </ul>
+                </div>
+                   <div class="guide-section">
+                    <h4>4. 수면 (睡眠)</h4>
+                    <p><strong class="recommend">추천해요:</strong></p>
+                    <ul>
+                        <li>규칙적인 수면 습관을 들이고 편안한 환경을 만드세요. 일정한 시간에 자고 일어나는 것이 중요합니다.</li>
+                        <li>잠들기 전 명상이나 이완 요법을 시도하고, 조용하고 어두운 환경을 조성하세요.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class="mt-8 text-center text-lg font-semibold text-teal-700">✨ 나의 몸을 아끼고 돌보는 습관, 건강한 자궁과 행복한 삶의 시작입니다. 궁금한 점은 언제든지 문의해 주세요! ✨</p>
+        </div>
+
+    <footer class="text-center text-gray-500 text-sm mt-8 pt-4 border-t border-gray-200">
+        <p>길음한의원 | 서울시 성북구 길음로 10, 2층</p>
+        <p>전화: 02-943-1668 | 웹사이트: <a href="https://goodnewshani.my.canva.site/" target="_blank" class="text-teal-600 hover:underline">goodnewshani.my.canva.site</a></p>
+        <p>Copyright © 2025 길음한의원. All rights reserved.</p>
+    </footer>
+    </div> <script>
+        const symptoms = [
+            { id: "s1", text: "1. 손발이 늘 차갑다." }, { id: "s2", text: "2. 생리통이 심하다." },
+            { id: "s3", text: "3. 얼굴이나 몸에 여드름 등 피부 트러블이 잘 생긴다." }, { id: "s4", text: "4. 앉았다 일어설 때 어지럽다." },
+            { id: "s5", text: "5. 스트레스를 많이 받고 예민한 편이다." }, { id: "s6", text: "6. 생리 양이 적고 기간이 짧다." },
+            { id: "s7", text: "7. 생리혈에 덩어리가 많다." }, { id: "s8", text: "8. 추위를 다른 사람보다 많이 탄다." },
+            { id: "s9", text: "9. 질염이나 방광염에 자주 걸린다." }, { id: "s10", text: "10. 머리카락이 가늘어지고 잘 빠진다." },
+            { id: "s11", text: "11. 이유 없이 한숨을 자주 쉰다." }, { id: "s12", text: "12. 피부나 입, 눈이 건조하다." },
+            { id: "s13", text: "13. 생리 전에 가슴 통증, 허리 통증 등 증상이 심하다." }, { id: "s14", text: "14. 몸이 전체적으로 무겁고 찌뿌둥하다." },
+            { id: "s15", text: "15. 쉽게 피로하고 기운이 없는 편이다." }, { id: "s16", text: "16. 생리 주기가 늦어지거나 건너뛴다." },
+            { id: "s17", text: "17. 몸이 잘 붓고, 특히 다리가 무겁다." }, { id: "s18", text: "18. 질 건조감을 느끼거나 관계 시 불편하다." },
+            { id: "s19", text: "19. 소화가 잘 안되고, 묽은 변/설사를 자주 한다." }, { id: "s20", text: "20. 냉(분비물)에서 냄새가 나거나 색이 노랗다." },
+            { id: "s21", text: "21. 얼굴색이 창백하거나 누렇다는 말을 듣는다." }, { id: "s22", text: "22. 얼굴이나 가슴으로 열이 오르고 답답하다." },
+            { id: "s23", text: "23. 아랫배가 차갑게 느껴질 때가 많다." }, { id: "s24", text: "24. 생리혈 색이 검붉은 편이다." },
+            { id: "s25", text: "25. 가래가 잘 끓거나 속이 메스껍다." }, { id: "s26", text: "26. 손발톱이 약하고 잘 부서진다." },
+            { id: "s27", text: "27. 뒷목이나 어깨가 항상 뭉치고 아프다." }, { id: "s28", text: "28. 밤에 잠들기 어렵거나, 자다가 깬다." },
+            { id: "s29", "text": "29. 맑은 색의 냉(분비물)이 많은 편이다." }, { id: "s30", text: "30. 살이 잘 찌고, 특히 물살이 많다고 느낀다." }
+        ];
+
+        const symptomToPattern = {
+            s1: ["cold"], s2: ["stasis"], s3: ["heat"], s4: ["deficiency"], s5: ["stagnation"],
+            s6: ["deficiency"], s7: ["stasis"], s8: ["cold"], s9: ["heat"], s10: ["deficiency"],
+            s11: ["stagnation"], s12: ["heat"], s13: ["stagnation"], s14: ["damp"], s15: ["deficiency"],
+            s16: ["deficiency"], s17: ["damp"], s18: ["heat"], s19: ["damp"], s20: ["heat"],
+            s21: ["deficiency"], s22: ["heat"], s23: ["cold"], s24: ["stasis"], s25: ["damp"],
+            s26: ["deficiency"], s27: ["stagnation"], s28: ["heat"], s29: ["damp"], s30: ["damp"]
+        };
+
+        const patternToConstitution = {
+            cold: "guideCold", damp: "guideDamp", deficiency: "guideBlood", 
+            stasis: "guideBlood", stagnation: "guideQi", heat: "guideQi"
+        };
+        
+        const constitutionNames = {
+            guideCold: "냉체질(冷體質)", guideDamp: "습체질(濕體質)",
+            guideBlood: "혈체질(血體質)", guideQi: "기체질(氣體質)"
+        };
+
+        const symptomGridContainer = document.querySelector('.grid-container');
+        symptoms.forEach(symptom => {
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('question-item');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox'; checkbox.id = symptom.id; checkbox.name = symptom.id; checkbox.value = symptom.id;
+            const label = document.createElement('label');
+            label.htmlFor = symptom.id; label.textContent = symptom.text;
+            itemDiv.appendChild(checkbox); itemDiv.appendChild(label);
+            symptomGridContainer.appendChild(itemDiv);
+        });
+        
+        const resultsContainer = document.getElementById('resultsContainer');
+        const guideContainer = document.getElementById('guideContainer');
+        const myConstitutionResult = document.getElementById('myConstitutionResult');
+        const allGuides = document.querySelectorAll('.guide-content');
+        const printResultBtn = document.getElementById('printResultBtn'); 
+
+        document.getElementById('healthChecklistForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            let patternScores = { cold: 0, deficiency: 0, stagnation: 0, stasis: 0, damp: 0, heat: 0 };
+            let constitutionScores = { guideCold: 0, guideDamp: 0, guideBlood: 0, guideQi: 0 };
+            let submissionData = {};
+
+            submissionData.name = document.getElementById('name').value || '';
+            submissionData.age = document.getElementById('ageInput').value || '';
+            submissionData.date = document.getElementById('dateInput').value || '';
+
+            let totalChecks = 0;
+            symptoms.forEach(symptom => {
+                const isChecked = document.getElementById(symptom.id).checked;
+                submissionData[symptom.id] = isChecked ? 'Y' : 'N'; 
+                if (isChecked) {
+                    totalChecks++;
+                    if (symptomToPattern[symptom.id]) {
+                        symptomToPattern[symptom.id].forEach(pattern => {
+                            patternScores[pattern]++;
+                            const constitutionId = patternToConstitution[pattern];
+                            constitutionScores[constitutionId]++;
+                        });
+                    }
+                }
+            });
+            
+            let maxScore = 0;
+            let primaryConstitutionId = null;
+            for (const [id, score] of Object.entries(constitutionScores)) {
+                if (score > maxScore) { maxScore = score; primaryConstitutionId = id; }
+            }
+            let primaryConstitutionName = (primaryConstitutionId && maxScore > 0) ? constitutionNames[primaryConstitutionId] : '';
+
+            // 이 정보를 printResultBtn 클릭 이벤트에서도 사용할 수 있도록 전역 변수로 저장합니다.
+            window.primaryConstitutionIdForPrint = primaryConstitutionId; 
+            window.maxScoreForPrint = maxScore;
+            window.totalChecksForPrint = totalChecks;
+            window.patternScoresForPrint = patternScores; // 패턴별 점수도 전역 변수로 저장하여 인쇄에 활용
+            window.patientNameForPrint = submissionData.name; // 환자 이름도 전역 변수로 저장
+
+
+            submissionData.coldScore = constitutionScores.guideCold;
+            submissionData.dampScore = constitutionScores.guideDamp;
+            submissionData.bloodScore = constitutionScores.guideBlood;
+            submissionData.qiScore = constitutionScores.guideQi;
+            submissionData.primaryConstitution = primaryConstitutionName;
+
+            // 결과 점수 표시 (이 부분은 화면에만 표시되고, 인쇄는 아래 printResultBtn에서 별도로 구성)
+            resultsContainer.innerHTML = `
+                <h2 class="results-title">패턴별 점수 결과</h2>
+                <div class="score-item">한증 (Cold): <span class="score-value">${patternScores.cold}</span></div>
+                <div class="score-item">기혈허약 (Deficiency): <span class="score-value">${patternScores.deficiency}</span></div>
+                <div class="score-item">기체 (Stagnation): <span class="score-value">${patternScores.stagnation}</span></div>
+                <div class="score-item">어혈 (Stasis): <span class="score-value">${patternScores.stasis}</span></div>
+                <div class="score-item">습담 (Damp): <span class="score-value">${patternScores.damp}</span></div>
+                <div class="score-item">음허/열 (Heat): <span class="score-value">${patternScores.heat}</span></div>
+            `;
+            resultsContainer.classList.remove('hidden');
+
+            // 모든 가이드 숨기기
+            allGuides.forEach(el => el.classList.add('hidden'));
+            myConstitutionResult.classList.add('hidden');
+
+            // 화면에 표시될 '나의 주요 체질 경향성' 업데이트
+            let patientNameDisplay = submissionData.name.trim() !== '' ? submissionData.name + '님' : '(      )님';
+            if (totalChecks === 0) {
+                 myConstitutionResult.innerHTML = "증상을 선택해주세요.";
+                 myConstitutionResult.classList.remove('hidden');
+            } else if (primaryConstitutionId && maxScore > 0) { 
+                document.getElementById(primaryConstitutionId).classList.remove('hidden');
+                myConstitutionResult.innerHTML = `${patientNameDisplay}의 주요 체질 경향성은 <span class="text-teal-700">${constitutionNames[primaryConstitutionId]}</span> 입니다.`;
+                myConstitutionResult.classList.remove('hidden');
+            } else {
+                 myConstitutionResult.innerHTML = "체질을 판단하기 위한 정보가 부족합니다.";
+                 myConstitutionResult.classList.remove('hidden');
+            }
+
+            guideContainer.classList.remove('hidden');
+            guideContainer.scrollIntoView({ behavior: 'smooth' });
+
+            // 결과가 나타난 후에 출력 버튼을 보이게 합니다.
+            printResultBtn.classList.remove('hidden');
+
+
+            // *** ✨ Google Apps Script로 데이터 전송 ✨ ***
+            const gasUrl = 'https://script.google.com/macros/s/AKfycbzaz99M4OAdLiJ39D_IkzYsWUDvH3Tlx0aqUc1eN9WxJu1apNrBP5JDbAr_BzfESYf5/exec'; 
+
+            if (gasUrl.startsWith('⚠️')) {
+                console.warn("Google Apps Script URL이 설정되지 않아 데이터를 저장하지 않습니다.");
+                return; 
+            }
+
+            fetch(gasUrl, {
+                method: 'POST',
+                mode: 'no-cors', 
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(submissionData),
+                redirect: 'follow'
+            })
+            .then(() => {
+                console.log("데이터 전송 시도 완료."); 
+                alert('설문 결과가 저장되었습니다!'); 
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('데이터 저장 중 오류가 발생했습니다.');
+            });
+        });
+
+        printResultBtn.addEventListener('click', function() {
+            const printWindow = window.open('', '', 'height=700,width=900');
+            
+            // 인쇄 창의 <head>에 필요한 스타일과 Tailwind CSS 로드를 추가합니다.
+            printWindow.document.write('<html><head><title>길음한의원 자궁체질 자가문진표 결과</title>');
+            printWindow.document.write('<link href="https://cdn.tailwindcss.com" rel="stylesheet">'); 
+            printWindow.document.write('<style>');
+            printWindow.document.write(`
+                body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #fff; }
+                .results-container, .guide-container {
+                    margin-bottom: 1.5rem; padding: 1.5rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; background-color: #f9fafb;
+                    box-shadow: none; border: none; /* 인쇄 시 외곽선 및 배경색 제거 */
+                }
+                .question-title, .results-title, .guide-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: #1f2937; }
+                .score-item { margin-bottom: 0.5rem; }
+                .score-value { font-weight: 600; }
+                .guide-section { margin-bottom: 1.5rem; border-bottom: 1px dashed #d1d5db; padding-bottom: 1.5rem; page-break-inside: avoid; }
+                .guide-section:last-child { border-bottom: none; padding-bottom: 0; }
+                .guide-section h4 { font-size: 1.1rem; font-weight: 600; color: #0d9488; margin-bottom: 0.5rem; }
+                .guide-section .recommend { color: #10b981; }
+                .guide-section .caution { color: #ef4444; }
+                .guide-section ul { list-style: disc; margin-left: 1.5rem; }
+                .warning { background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 1rem; margin-bottom: 1rem; font-size: 0.9rem; color: #b45309; }
+                .my-constitution { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; padding: 1rem; background-color: #ecfdf5; color: #065f46; border-radius: 0.5rem; }
+                
+                /* 인쇄 전용 스타일: 입력 폼, 버튼은 숨김 */
+                .question-group, form button, #printResultBtn { display: none !important; }
+                
+                /* printable-area 자체의 스타일을 인쇄에 맞게 조정 (shadow, border 제거) */
+                /* 새 창에서는 이 부분이 전체 레이아웃을 담당하므로 너비와 마진을 유지 */
+                .printable-area {
+                    max-width: 768px; 
+                    margin: 2rem auto; 
+                    padding: 2rem;
+                    box-shadow: none !important;
+                    border: none !important;
+                    background-color: #fff !important;
+                }
+
+                /* 테이블 스타일 추가 (print 미디어 쿼리 안에 있어야 인쇄 시 적용) */
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+                    table-layout: fixed; /* 고정 테이블 레이아웃 */
+                }
+                th, td {
+                    border: 1px solid #ccc;
+                    padding: 0.75rem;
+                    text-align: left;
+                    vertical-align: top;
+                }
+                th {
+                    background-color: #f2f2f2;
+                    font-weight: 600;
+                    width: 50%; /* 두 열의 너비를 균등하게 나눔 */
+                }
+                .pattern-name { width: 50%; }
+                .pattern-score { width: 50%; text-align: center;} /* 점수 열은 중앙 정렬 */
+
+            `);
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head><body>');
+            
+            // 인쇄할 내용을 담을 임시 div 생성
+            const tempDiv = document.createElement('div');
+            tempDiv.classList.add('printable-area'); 
+
+            // 1. 헤더 (로고, 제목, 기본 문구)는 항상 포함
+            tempDiv.innerHTML += document.querySelector('.printable-area header').outerHTML;
+
+            // 2. 환자 기본 정보 (이름, 나이, 날짜)를 별도로 추가
+            const name = window.patientNameForPrint || ''; // 전역 변수에서 환자 이름 가져오기
+            const age = document.getElementById('ageInput').value || '미입력';
+            const date = document.getElementById('dateInput').value || '미입력';
+            
+            // 환자 이름이 입력되었는지에 따라 출력 형식 변경
+            const patientNameTitle = name.trim() !== '' ? `${name}님의 정보` : `(      )님의 정보`;
+
+            tempDiv.innerHTML += `
+                <div class="question-group" style="border: none; background-color: #fff; padding: 0 1.5rem;">
+                    <h2 class="question-title" style="margin-bottom: 0.5rem;">${patientNameTitle}</h2>
+                    <p class="mb-1"><strong>나이:</strong> ${age}세</p>
+                    <p><strong>검사 날짜:</strong> ${date}</p>
+                </div>
+            `;
+
+            // 3. 패턴별 점수 결과 (resultsContainer)를 표 형식으로 구성
+            const patternScores = window.patternScoresForPrint; // 전역 변수에서 점수 가져오기
+            let scoreTableHtml = `
+                <div class="results-container" style="border: none; background-color: #fff; padding: 0;">
+                    <h2 class="results-title" style="margin-bottom: 0.5rem;">패턴별 점수 결과</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="pattern-name">패턴</th>
+                                <th class="pattern-score">점수</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>한증 (Cold)</td>
+                                <td class="pattern-score">${patternScores.cold}</td>
+                            </tr>
+                            <tr>
+                                <td>기혈허약 (Deficiency)</td>
+                                <td class="pattern-score">${patternScores.deficiency}</td>
+                            </tr>
+                            <tr>
+                                <td>기체 (Stagnation)</td>
+                                <td class="pattern-score">${patternScores.stagnation}</td>
+                            </tr>
+                            <tr>
+                                <td>어혈 (Stasis)</td>
+                                <td class="pattern-score">${patternScores.stasis}</td>
+                            </tr>
+                            <tr>
+                                <td>습담 (Damp)</td>
+                                <td class="pattern-score">${patternScores.damp}</td>
+                            </tr>
+                            <tr>
+                                <td>음허/열 (Heat)</td>
+                                <td class="pattern-score">${patternScores.heat}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            tempDiv.innerHTML += scoreTableHtml;
+
+            // 4. '나의 주요 체질 경향성' 부분 수정 (환자 이름 반영)
+            let primaryConstitutionName = (window.primaryConstitutionIdForPrint && window.maxScoreForPrint > 0) ? constitutionNames[window.primaryConstitutionIdForPrint] : '';
+            let patientNameDisplayForConstitution = name.trim() !== '' ? name + '님' : '(      )님';
+            let constitutionResultText;
+
+            if (window.totalChecksForPrint === 0) {
+                constitutionResultText = "체질을 판단하기 위한 증상이 선택되지 않았습니다.";
+            } else if (primaryConstitutionName) {
+                constitutionResultText = `${patientNameDisplayForConstitution}의 주요 체질 경향성은 <span style="color: #065f46;">${primaryConstitutionName}</span> 입니다.`;
+            } else {
+                constitutionResultText = "체질을 판단하기 위한 정보가 부족합니다.";
+            }
+
+            tempDiv.innerHTML += `
+                <div class="my-constitution" style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-top: 1.5rem; margin-bottom: 1.5rem; padding: 1rem; background-color: #ecfdf5; color: #065f46; border-radius: 0.5rem;">
+                    ${constitutionResultText}
+                </div>
+            `;
+
+
+            // 5. 선택된 체질의 섭생 가이드만 가져오기
+            if (window.primaryConstitutionIdForPrint && window.totalChecksForPrint > 0) {
+                const selectedGuideElement = document.getElementById(window.primaryConstitutionIdForPrint);
+                if (selectedGuideElement) {
+                    tempDiv.innerHTML += `
+                        <div class="guide-container" style="border: none; background-color: #fff; padding: 0;">
+                            <h2 class="guide-title" style="font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; color: #1f2937;">내 몸을 위한 맞춤 가이드: 자궁사상(子宮四象) 체질별 섭생 가이드</h2>
+                            <p class="mb-4">이 가이드는 환자분의 '자궁사상' 체질에 맞춰 건강한 생활 습관을 실천하실 수 있도록 돕기 위해 만들어졌습니다. 아래 내용을 참고하여 일상생활 속에서 꾸준히 실천해 보세요. 내 몸의 긍정적인 변화를 경험하실 수 있습니다.</p>
+                            <div class="warning">⚠️ 주의: 이 내용은 일반적인 권장 사항이며, 개인의 상세한 상태나 동반 질환에 따라 달라질 수 있습니다. 반드시 담당 한의사의 지도에 따라 실천해 주세요.</div>
+                            ${selectedGuideElement.outerHTML}
+                            <p class="mt-8 text-center text-lg font-semibold text-teal-700">✨ 나의 몸을 아끼고 돌보는 습관, 건강한 자궁과 행복한 삶의 시작입니다. 궁금한 점은 언제든지 문의해 주세요! ✨</p>
+                        </div>
+                    `;
+                }
+            } else {
+                // 선택된 체질이 없거나 체크된 증상이 없을 경우의 메시지를 인쇄물에 추가
+                tempDiv.innerHTML += `
+                    <div class="guide-container" style="border: none; background-color: #fff; padding: 0;">
+                        <h2 class="guide-title" style="font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; color: #1f2937;">내 몸을 위한 맞춤 가이드</h2>
+                        <p class="text-center text-gray-600 mt-4 mb-4">체질을 판단하기 위한 정보가 부족하거나 선택된 증상이 없습니다. 더 자세한 상담은 한의원에 문의해주세요.</p>
+                        <p class="mt-8 text-center text-lg font-semibold text-teal-700">✨ 나의 몸을 아끼고 돌보는 습관, 건강한 자궁과 행복한 삶의 시작입니다. 궁금한 점은 언제든지 문의해 주세요! ✨</p>
+                    </div>
+                `;
+            }
+
+            // 6. 푸터 (한의원 정보)는 항상 포함
+            tempDiv.innerHTML += document.querySelector('.printable-area footer').outerHTML;
+
+
+            printWindow.document.write(tempDiv.outerHTML); 
+            printWindow.document.write('</body></html>');
+            printWindow.document.close(); 
+
+            printWindow.onload = function() {
+                printWindow.focus(); 
+                printWindow.print(); 
+                printWindow.close(); 
+            };
+            printWindow.onerror = function() {
+                console.error("Print window encountered an error, possibly image loading failure.");
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
+            };
+        });
+    </script>
+</body>
+</html>
